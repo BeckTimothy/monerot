@@ -1,0 +1,31 @@
+#!/bin/bash
+ARGS=$(getopt --options vhc:o: --long "verbose,help,output-file:" -- "$@")
+eval set -- "$ARGS"
+verbose="false"
+help="false"
+count=50
+output_file="addresses.txt"
+
+while true; do
+    case "$1" in
+        -v|--verbose) verbose="true"; shift ;;
+        -h|--help) help="true"; shift ;;
+	-c) count="$2"; shift 2 ;;
+	-o|--output-file) output_file="$2"; shift 2 ;;
+        --) break ;;
+        *) printf "Unknown option %s\n" "$1"; exit 1 ;;
+    esac
+done
+if [ "$help" = "true" ]; then
+    echo "Help information"
+    echo "-v, --verbose: Enable verbose output"
+    echo "-h, --help: Show this help message"
+    echo "-c, Specify a count value"
+    echo "-o, --output-file: Speficy a location and filename for the output, (Default: ./addresses.txt)"
+    exit 0
+fi   
+
+
+for ((i=1; i<=count; i++)); do
+    echo "$i" >> "$output_file"  # Append the loop index to the file
+done
