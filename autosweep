@@ -1,0 +1,73 @@
+#!/bin/bash
+ARGS=$(getopt --options hs:n:p: --long "help,send-address:,wallet-name:,password:" -- "$@")
+eval set -- "$ARGS"
+
+
+help="false"
+
+output_file="addresses.txt"
+
+send_address=""
+wallet_name=""
+wallet_password=""
+
+while true; do
+    case "$1" in
+        -v|--verbose) verbose="true"; shift ;;
+        -h|--help) help="true"; shift ;;
+	-c) count="$2"; shift 2 ;;
+	-s|--send-address) send_address="$2"; shift 2 ;;
+	-n|--wallet-name) wallet_name="$2"; shift 2 ;;
+	-p|--password) wallet_password="$2"; shift 2 ;;
+        --) break ;;
+        *) printf "Unknown option %s\n" "$1"; exit 1 ;;
+    esac
+done
+if [ "$help" = "true" ]; then
+    echo "EXAMPLE: autosweep -s "" -n ./moneroWalletFile -p Passw0rd
+    echo ""
+    echo "Help information"
+    echo "-h, --help: Show this help message"
+    echo "-s, --send-address: Specify an Address to send Monero to"
+    echo "-n, --wallet-name: Specify the location and filename of a monero wallet file (**Required)"
+    echo "-p, --password: Specify the password for your monero wallet"
+    exit 0
+fi   
+
+if [ -z "$wallet_name" ]; then
+    echo "Wallet File Location must be specified with -n or --wallet-name"
+    exit 0
+fi
+
+
+if [ -z "$send_address" ]; then
+    echo "Send Address must be specified with -s or --send-address to sweep wallet"
+    exit 0
+fi
+
+
+if [ -z "$wallet_password" ]; then
+    echo "Please enter your Wallet Password: "
+    read -s password
+    echo
+fi
+
+#TODO: dynamically find alternative paths for cli or assume it's in PATH
+monero_wallet_cli_path="/home/linuxbrew/.linuxbrew/bin/monero-wallet-cli"
+
+if [ ! -f "$monero_wallet_cli_path" ]; then
+    echo "Error: monero-wallet-cli script not found!"
+    exit 1
+fi
+
+#TODO: throw error if wallet file or password is incorrect
+
+#{
+#	for ((i=1; i<=count; i++)); do
+#		echo address new
+#	done
+#	echo "exit"
+#} | "$monero_wallet_cli_path" --wallet-file "$wallet_name" --password  "$wallet_password" | grep -oP '\d+\s+[A-Za-z0-9]{95}' | awk '{print $2}' >> "$output_file" 2>$1
+#
+#
+#echo "Generated $count subaddress(es) and wrote to $output_file."

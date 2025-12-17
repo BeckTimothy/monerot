@@ -19,4 +19,11 @@ EXAMPLE: autogen -c 500 --output-file /home/admin/myWalletAddresses.txt -n ./mon
 -p, --password: Specify the password for your monero wallet
 ```
 
+---
+### autosweep
+
+A bash script to sweep all monero from specified wallet to a specified address
+
+WIP
+
 --- 
