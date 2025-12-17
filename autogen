@@ -3,7 +3,7 @@ ARGS=$(getopt --options vhc:o:n:p: --long "verbose,help,output-file:,wallet-name
 eval set -- "$ARGS"
 verbose="false"
 help="false"
-count=50
+count=1
 output_file="addresses.txt"
 
 wallet_name=""
@@ -22,11 +22,14 @@ while true; do
     esac
 done
 if [ "$help" = "true" ]; then
+    echo "EXAMPLE: autogen -c 500 --output-file /home/admin/myWalletAddresses.txt -n ./moneroWalletFile -p Passw0rd"
+    echo ""
     echo "Help information"
-    echo "-v, --verbose: Enable verbose output"
     echo "-h, --help: Show this help message"
-    echo "-c, Specify a count value"
+    echo "-c, Specify a count value (Default: 1)"
     echo "-o, --output-file: Speficy a location and filename for the output, (Default: ./addresses.txt)"
+    echo "-n, --wallet-name: Specify the location and filename of a monero wallet file (**Required)"
+    echo "-p, --password: Specify the password for your monero wallet"
     exit 0
 fi   
 
