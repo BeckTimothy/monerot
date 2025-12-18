@@ -1,7 +1,6 @@
 # Monerot - Monero Tools
 
-##### Small bash tools/scripts for managing and automating Monerod and Monero-Wallet-CLI
-Scripts assume monerod is running and monero-wallet-cli is in PATH. 
+###### Lightweight bash tools/scripts for managing and automating Monerod and Monero-Wallet-CLI. These scripts assume monerod is running and monero-wallet-cli is in PATH. For those reason bash, monerod, and monero-wallet-cli are dependencies.
 
 ---
 ### autogen:
@@ -20,7 +19,7 @@ EXAMPLE: autogen -c 500 --output-file /home/admin/myWalletAddresses.txt -n ./mon
 ```
 
 ---
-### autosweep
+### autosweep:
 
 A bash script to sweep all monero from specified wallet to a specified address
 
