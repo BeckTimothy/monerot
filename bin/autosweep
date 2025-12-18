@@ -36,13 +36,13 @@ fi
 
 if [ -z "$wallet_name" ]; then
     echo "Wallet File Location must be specified with -n or --wallet-name"
-    exit 0
+    exit 1
 fi
 
 
 if [ -z "$send_address" ]; then
     echo "Send Address must be specified with -s or --send-address to sweep wallet"
-    exit 0
+    exit 1
 fi
 
 
@@ -71,3 +71,4 @@ fi
 #
 #
 #echo "Generated $count subaddress(es) and wrote to $output_file."
+exit 0

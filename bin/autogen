@@ -21,6 +21,7 @@ while true; do
         *) printf "Unknown option %s\n" "$1"; exit 1 ;;
     esac
 done
+
 if [ "$help" = "true" ]; then
     echo "EXAMPLE: autogen -c 500 --output-file /home/admin/myWalletAddresses.txt -n ./moneroWalletFile -p Passw0rd"
     echo ""
@@ -35,21 +36,20 @@ fi
 
 if [ -z "$wallet_name" ]; then
     echo "Wallet File Location must be specified with -n or --wallet-name"
-    exit 0
+    exit 1
 fi
 
-
-if [ -z "$wallet_password" ]; then
-    echo "Please enter your Wallet Password: "
-    read -s password
-    echo
-fi
 
 if [ -z "$output_file" ]; then
     echo "Output file must be specified"
     exit 1
 fi
 
+if [ -z "$wallet_password" ]; then
+    echo "Please enter your Wallet Password: "
+    read -s password
+    echo
+fi
 
 #TODO: dynamically find alternative paths for cli or assume it's in PATH
 #monero_wallet_cli_path="/home/linuxbrew/.linuxbrew/bin/monero-wallet-cli"
@@ -70,3 +70,4 @@ fi
 
 
 echo "Generated $count subaddress(es) and wrote to $output_file."
+exit 0
