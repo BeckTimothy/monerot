@@ -1,7 +1,8 @@
 #!/bin/bash
-ARGS=$(getopt --options vhc:o:n:p: --long "verbose,help,output-file:,wallet-name:,password:" -- "$@")
+if ! ARGS=$(getopt --options hc:o:n:p: --long help,output-file:,wallet-name:,password: -- "$@"); then
+    exit 1
+fi
 eval set -- "$ARGS"
-verbose="false"
 help="false"
 count=1
 output_file="addresses.txt"
@@ -11,7 +12,6 @@ wallet_password=""
 
 while true; do
     case "$1" in
-        -v|--verbose) verbose="true"; shift ;;
         -h|--help) help="true"; shift ;;
 	-c) count="$2"; shift 2 ;;
 	-o|--output-file) output_file="$2"; shift 2 ;;
@@ -46,8 +46,7 @@ if [ -z "$output_file" ]; then
 fi
 
 if [ -z "$wallet_password" ]; then
-    echo "Please enter your Wallet Password: "
-    read -s password
+    read -rsp "Please enter your Wallet Password: " wallet_password
     echo
 fi
 
@@ -69,9 +68,14 @@ if grep -qF "Error: failed to load wallet: invalid password" <<< "$wallet_output
     exit 1
 fi
 
-addresses=$(grep -oP '\d+\s+[A-Za-z0-9]{95}' <<< "$wallet_output" | awk '{print $2}')
-printf '%s\n' "$addresses" >> "$output_file"
+addresses=$(grep -oE '[0-9]+[[:space:]]+[A-Za-z0-9]{95}'<<< "$wallet_output" | awk '{print $2}')
 count=$(grep -c . <<< "$addresses")
-echo "Generated $count subaddress(es) and append to $output_file."
+
+if (( $count > 0 )); then
+    printf '%s\n' "$addresses" >> "$output_file"
+fi
+
+
+echo "Generated $count subaddress(es) and appended to $output_file."
 exit 0
 
