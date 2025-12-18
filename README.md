@@ -25,4 +25,17 @@ A bash script to sweep all monero from specified wallet to a specified address
 
 WIP
 
---- 
+---
+### findWallets
+
+ 
+---
+### donateXMR
+
+
+---
+### donateWallet
+
+
+---
+
