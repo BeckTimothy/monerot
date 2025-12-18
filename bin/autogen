@@ -58,7 +58,7 @@ fi
 		echo address new
 	done
 	echo "exit"
-} | monero-wallet-cli --wallet-file "$wallet_name" --password  "$wallet_password" | grep -oP '\d+\s+[A-Za-z0-9]{95}' | awk '{print $2}' >> "$output_file" 2>/dev/null
+} | monero-wallet-cli --log-file "" --wallet-file "$wallet_name" --password  "$wallet_password" | grep -oP '\d+\s+[A-Za-z0-9]{95}' | awk '{print $2}' >> "$output_file" 2>/dev/null
 
 
 echo "Generated $count subaddress(es) and wrote to $output_file."
