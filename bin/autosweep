@@ -1,7 +1,7 @@
 #!/bin/bash
 ARGS=$(getopt --options hs:n:p: --long "help,send-address:,wallet-name:,password:" -- "$@")
 eval set -- "$ARGS"
-
+#TODO: safe args
 
 help="false"
 
@@ -23,6 +23,7 @@ while true; do
         *) printf "Unknown option %s\n" "$1"; exit 1 ;;
     esac
 done
+#TODO: example
 if [ "$help" = "true" ]; then
     echo "EXAMPLE: autosweep -s \"\"  -n ./moneroWalletFile -p Passw0rd"
     echo ""
@@ -45,22 +46,20 @@ if [ -z "$send_address" ]; then
     exit 1
 fi
 
-
+#TODO: read password correctly
 if [ -z "$wallet_password" ]; then
     echo "Please enter your Wallet Password: "
     read -s password
     echo
 fi
 
-#TODO: throw error if wallet file or password is incorrect
+#TODO: Throw Error if Monerod isn't configured correctly
+#"Error: wallet failed to connect to daemon: http://localhost:18081. Daemon either is not started or wrong port was passed. Please make sure daemon is running or change the daemon address using the 'set_daemon' command."
 
-#{
-#	for ((i=1; i<=count; i++)); do
-#		echo address new
-#	done
-#	echo "exit"
-#} | "$monero_wallet_cli_path" --wallet-file "$wallet_name" --password  "$wallet_password" | grep -oP '\d+\s+[A-Za-z0-9]{95}' | awk '{print $2}' >> "$output_file" 2>/dev/null
-#
-#
-#echo "Generated $count subaddress(es) and wrote to $output_file."
+#TODO: Throw Error if Wallet Doesn't have Available funds
+#"Error: internal error: No unlocked balance in the specified account"
+
+
+
+
 exit 0
