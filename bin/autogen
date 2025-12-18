@@ -51,15 +51,27 @@ if [ -z "$wallet_password" ]; then
     echo
 fi
 
-#TODO: throw error if wallet file or password is incorrect
+wallet_output=$( 
+   { 
+       for ((i=1; i<=count; i++)); do 
+               echo "address new" 
+       done 
+       echo "exit" 
+} | monero-wallet-cli --log-file ""  --wallet-file "$wallet_name" --password "$wallet_password" 2>/dev/null)
 
-{
-	for ((i=1; i<=count; i++)); do
-		echo address new
-	done
-	echo "exit"
-} | monero-wallet-cli --log-file "" --wallet-file "$wallet_name" --password  "$wallet_password" | grep -oP '\d+\s+[A-Za-z0-9]{95}' | awk '{print $2}' >> "$output_file" 2>/dev/null
+if grep -qF "Error: Key file not found." <<< "$wallet_output"; then
+    echo "Wallet key file not found." >&2
+    exit 1
+fi
 
+if grep -qF "Error: failed to load wallet: invalid password" <<< "$wallet_output"; then
+    echo "Password provided is invalid." >&2
+    exit 1
+fi
 
-echo "Generated $count subaddress(es) and wrote to $output_file."
+addresses=$(grep -oP '\d+\s+[A-Za-z0-9]{95}' <<< "$wallet_output" | awk '{print $2}')
+printf '%s\n' "$addresses" >> "$output_file"
+count=$(grep -c . <<< "$addresses")
+echo "Generated $count subaddress(es) and append to $output_file."
 exit 0
+
