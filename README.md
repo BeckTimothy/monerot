@@ -1,7 +1,7 @@
 # Monerot - Monero Tools
 
 ##### Small bash tools/scripts for managing and automating Monerod and Monero-Wallet-CLI
-
+Scripts assume monerod is running and monero-wallet-cli is in PATH. 
 
 ---
 ### autogen:
