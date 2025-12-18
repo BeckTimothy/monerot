@@ -51,14 +51,6 @@ if [ -z "$wallet_password" ]; then
     echo
 fi
 
-#TODO: dynamically find alternative paths for cli or assume it's in PATH
-#monero_wallet_cli_path="/home/linuxbrew/.linuxbrew/bin/monero-wallet-cli"
-#
-#if [ ! -f "$monero_wallet_cli_path" ]; then
-#    echo "Error: monero-wallet-cli script not found!"
-#    exit 1
-#fi
-
 #TODO: throw error if wallet file or password is incorrect
 
 {
