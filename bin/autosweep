@@ -19,12 +19,12 @@ while true; do
 	-s|--send-address) send_address="$2"; shift 2 ;;
 	-n|--wallet-name) wallet_name="$2"; shift 2 ;;
 	-p|--password) wallet_password="$2"; shift 2 ;;
-        --) break ;;
+        --) shift; break ;;
         *) printf "Unknown option %s\n" "$1"; exit 1 ;;
     esac
 done
 if [ "$help" = "true" ]; then
-    echo "EXAMPLE: autosweep -s "" -n ./moneroWalletFile -p Passw0rd
+    echo "EXAMPLE: autosweep -s \"\"  -n ./moneroWalletFile -p Passw0rd"
     echo ""
     echo "Help information"
     echo "-h, --help: Show this help message"
@@ -53,12 +53,12 @@ if [ -z "$wallet_password" ]; then
 fi
 
 #TODO: dynamically find alternative paths for cli or assume it's in PATH
-monero_wallet_cli_path="/home/linuxbrew/.linuxbrew/bin/monero-wallet-cli"
-
-if [ ! -f "$monero_wallet_cli_path" ]; then
-    echo "Error: monero-wallet-cli script not found!"
-    exit 1
-fi
+#monero_wallet_cli_path="/home/linuxbrew/.linuxbrew/bin/monero-wallet-cli"
+#
+#if [ ! -f "$monero_wallet_cli_path" ]; then
+#    echo "Error: monero-wallet-cli script not found!"
+#    exit 1
+#fi
 
 #TODO: throw error if wallet file or password is incorrect
 
@@ -67,7 +67,7 @@ fi
 #		echo address new
 #	done
 #	echo "exit"
-#} | "$monero_wallet_cli_path" --wallet-file "$wallet_name" --password  "$wallet_password" | grep -oP '\d+\s+[A-Za-z0-9]{95}' | awk '{print $2}' >> "$output_file" 2>$1
+#} | "$monero_wallet_cli_path" --wallet-file "$wallet_name" --password  "$wallet_password" | grep -oP '\d+\s+[A-Za-z0-9]{95}' | awk '{print $2}' >> "$output_file" 2>/dev/null
 #
 #
 #echo "Generated $count subaddress(es) and wrote to $output_file."
