@@ -36,6 +36,7 @@ EXAMPLE: c3poolupdate -p 500 --wallet 8748cigrtHj9uB4voKKQd67PAG1crVAR4Y9G6Ku2s4
 -h, --help: Show this help message
 -w, --wallet: Specify the address of the payout wallet
 -p, --pay-threshold: Specify the value the payout threshold should be set to 0.1 - 1000 (Default: 0.1)
+```
 
 ---
 ### findWallets
