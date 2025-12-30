@@ -25,8 +25,8 @@ if [ "$help" = "true" ]; then
     echo ""
     echo "Help information"
     echo "-h, --help: Show this help message"
-    echo "-w, --wallet: Specify the address of the payout waller"
-    echo "-p, --pay-threshold: Specify the value the payout threshold should be set to 0.1 - 1000"
+    echo "-w, --wallet: Specify the address of the payout wallet"
+    echo "-p, --pay-threshold: Specify the value the payout threshold should be set to 0.1 - 1000 (Default: 0.1)"
     exit 0
 fi
 
