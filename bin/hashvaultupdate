@@ -1,0 +1,57 @@
+#! /bin/bash
+
+if ! ARGS=$(getopt --options hp:w: --long help,pay-threshold:,wallet:, -- "$@"); then
+    exit 1
+fi
+eval set -- "$ARGS"
+help="false"
+
+value=1000000000
+wallet=""
+
+while true; do
+    case "$1" in
+        -h|--help) help="true"; shift ;;
+	-c) count="$2"; shift 2 ;;
+	-p|--pay-threshold) value="$2"; shift 2 ;;
+	-w|--wallet) wallet="$2"; shift 2 ;;
+        --) shift; break ;;
+        *) printf "Unknown option %s\n" "$1"; exit 1 ;;
+    esac
+done
+
+if [ "$help" = "true" ]; then
+    echo "EXAMPLE: hashvaultupdate -p 500 --wallet 8748cigrtHj9uB4voKKQd67PAG1crVAR4Y9G6Ku2s42UFx1RVbnDCBH7Dc9c8sYGvE5yhM5pniJNs86ki3hPk1wQDtePjRX"
+    echo ""
+    echo "Help information"
+    echo "-h, --help: Show this help message"
+    echo "-w, --wallet: Specify the address of the payout wallet"
+    echo "-p, --pay-threshold: Specify the value the payout threshold should be set to 1000000000 - 5000000000000 (Default: 1000000000)"
+    exit 0
+fi
+
+if [ -z "$wallet" ]; then
+    echo "Wallet Address must be specified with -w or --wallet"
+    exit 1
+fi
+
+response=$(curl -fsS --request POST \
+  --url https://api.hashvault.pro/v3/monero/wallet/$wallet/private/threshold \
+  --header 'accept: application/json, text/plain, */*' \
+  --header 'accept-language: en-US,en;q=0.5' \
+  --header 'content-type: application/json;charset=UTF-8' \
+  --header 'dnt: 1' \
+  --header 'origin: https://monero.hashvault.pro' \
+  --header 'priority: u=1, i' \
+  --header 'referer: https://monero.hashvault.pro/' \
+  --header 'sec-ch-ua: "Brave";v="143", "Chromium";v="143", "Not A(Brand";v="24"' \
+  --header 'sec-ch-ua-mobile: ?0' \
+  --header 'sec-ch-ua-platform: "Linux"' \
+  --header 'sec-fetch-dest: empty' \
+  --header 'sec-fetch-mode: cors' \
+  --header 'sec-fetch-site: same-site' \
+  --header 'sec-gpc: 1' \
+  --header 'user-agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36' \
+  --data '{"threshold":'$value'}'
+)
+echo "$response"
