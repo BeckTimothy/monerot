@@ -5,3 +5,5 @@ test.txt
 ./test
 test/*
 monero-wallet-cli.log
+addresses.txt
+

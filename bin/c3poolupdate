@@ -1,0 +1,102 @@
+#! /bin/bash
+
+if ! ARGS=$(getopt --options hp:w: --long help,pay-threshold:,wallet:, -- "$@"); then
+    exit 1
+fi
+eval set -- "$ARGS"
+help="false"
+
+value=0.1
+wallet=""
+
+while true; do
+    case "$1" in
+        -h|--help) help="true"; shift ;;
+	-c) count="$2"; shift 2 ;;
+	-p|--pay-threshold) value="$2"; shift 2 ;;
+	-w|--wallet) wallet="$2"; shift 2 ;;
+        --) shift; break ;;
+        *) printf "Unknown option %s\n" "$1"; exit 1 ;;
+    esac
+done
+
+if [ "$help" = "true" ]; then
+    echo "EXAMPLE: c3poolupdate -p 500 --wallet 8748cigrtHj9uB4voKKQd67PAG1crVAR4Y9G6Ku2s42UFx1RVbnDCBH7Dc9c8sYGvE5yhM5pniJNs86ki3hPk1wQDtePjRX"
+    echo ""
+    echo "Help information"
+    echo "-h, --help: Show this help message"
+    echo "-w, --wallet: Specify the address of the payout waller"
+    echo "-p, --pay-threshold: Specify the value the payout threshold should be set to 0.1 - 1000"
+    exit 0
+fi
+
+if [ -z "$wallet" ]; then
+    echo "Wallet Address must be specified with -w or --wallet"
+    exit 1
+fi
+
+html=$(curl -fsS --request GET \
+  --url https://c3pool.com/ \
+  --header 'Cookie: changeLanguage=English; addressHistoryArr=8748cigrtHj9uB4voKKQd67PAG1crVAR4Y9G6Ku2s42UFx1RVbnDCBH7Dc9c8sYGvE5yhM5pniJNs86ki3hPk1wQDtePjRX; userAddress=8748cigrtHj9uB4voKKQd67PAG1crVAR4Y9G6Ku2s42UFx1RVbnDCBH7Dc9c8sYGvE5yhM5pniJNs86ki3hPk1wQDtePjRX' \
+  --header 'accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8' \
+  --header 'accept-language: en-US,en;q=0.6' \
+  --header 'cache-control: no-cache' \
+  --header 'dnt: 1' \
+  --header 'pragma: no-cache' \
+  --header 'priority: u=0, i' \
+  --header 'sec-ch-ua: "Brave";v="143", "Chromium";v="143", "Not A(Brand";v="24"' \
+  --header 'sec-ch-ua-mobile: ?0' \
+  --header 'sec-ch-ua-platform: "Linux"' \
+  --header 'sec-fetch-dest: document' \
+  --header 'sec-fetch-mode: navigate' \
+  --header 'sec-fetch-site: same-origin' \
+  --header 'sec-fetch-user: ?1' \
+  --header 'sec-gpc: 1' \
+  --header 'upgrade-insecure-requests: 1' \
+  --header 'user-agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36'|
+  grep -oE 'src="js/app[^"]+"' |
+  sed -E 's|src="js/app||; s|"||'
+)
+token=$(curl -fsS --request GET \
+  --url https://c3pool.com/js/app$html \
+  --header 'Cookie: changeLanguage=English; addressHistoryArr=8748cigrtHj9uB4voKKQd67PAG1crVAR4Y9G6Ku2s42UFx1RVbnDCBH7Dc9c8sYGvE5yhM5pniJNs86ki3hPk1wQDtePjRX; userAddress=8748cigrtHj9uB4voKKQd67PAG1crVAR4Y9G6Ku2s42UFx1RVbnDCBH7Dc9c8sYGvE5yhM5pniJNs86ki3hPk1wQDtePjRX' \
+  --header 'accept: */*' \
+  --header 'accept-language: en-US,en;q=0.6' \
+  --header 'cache-control: no-cache' \
+  --header 'dnt: 1' \
+  --header 'pragma: no-cache' \
+  --header 'referer: https://c3pool.com/' \
+  --header 'sec-ch-ua: "Brave";v="143", "Chromium";v="143", "Not A(Brand";v="24"' \
+  --header 'sec-ch-ua-mobile: ?0' \
+  --header 'sec-ch-ua-platform: "Linux"' \
+  --header 'sec-fetch-dest: script' \
+  --header 'sec-fetch-mode: no-cors' \
+  --header 'sec-fetch-site: same-origin' \
+  --header 'sec-gpc: 1' \
+  --header 'user-agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36'|
+  sed -nE 's/.*token:[[:space:]]*"([^"]+)".*/\1/p'
+)
+response=$(curl -fsS --request POST \
+  --url https://api.c3pool.com/user/updateThreshold \
+  --header 'accept: application/json, text/plain, */*' \
+  --header 'accept-language: en-US,en;q=0.6' \
+  --header 'content-type: application/json' \
+  --header 'dnt: 1' \
+  --header 'origin: https://c3pool.com' \
+  --header 'priority: u=1, i' \
+  --header 'referer: https://c3pool.com/' \
+  --header 'sec-ch-ua: "Brave";v="143", "Chromium";v="143", "Not A(Brand";v="24"' \
+  --header 'sec-ch-ua-mobile: ?0' \
+  --header 'sec-ch-ua-platform: "Linux"' \
+  --header 'sec-fetch-dest: empty' \
+  --header 'sec-fetch-mode: cors' \
+  --header 'sec-fetch-site: same-site' \
+  --header 'sec-gpc: 1' \
+  --header 'token: null' \
+  --header 'user-agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36' \
+  --data '{
+	"token":"'$token'",
+	"threshold":'$value',
+"username":"'$wallet'"
+}')
+echo "$response"
